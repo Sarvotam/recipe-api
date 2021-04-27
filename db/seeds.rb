@@ -11,13 +11,13 @@
 # Category.create(name: "Beverages");
 # Category.create(name: "Soups");
 # Category.create(name: "Salads");
-# Category.create(name: "Beef");
-# Category.create(name: "Poultry");
-# Recipe.create( name: 'burger.', user_id: 1, category_id: 1 );
-# Recipe.create( name: 'pizza.', user_id: 1, category_id: 1 );
+Category.create(name: "Beef");
+Category.create(name: "Poultry");
+Recipe.create( name: 'burger.', user_id: 1, category_id: 1 );
+Recipe.create( name: 'pizza.', user_id: 1, category_id: 2 );
 # User.create( username: 'sarvottam', password: 'pppppp' );
 # User.create( username: 'sarvottam1', password: 'pppppp' );
 # User.create( username: 'sarvottam2', password: 'pppppp' );
 # User.create( username: 'sarvottam3', password: 'pppppp' );
-
+Review.create( comment: "hello love", user_id: 3, recipe_id: 7 )
 user = User.create(username: "sarvottam", password: "pppppp")

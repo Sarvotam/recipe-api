@@ -1,5 +1,10 @@
 class Api::V1::UsersController < ApplicationController
-	before_action :authorized, only: [:auto_login]
+	before_action :authorized, only: [:show, :auto_login]
+
+def index
+  @user = User.all
+  render json: @user
+end
 
   def create
     @user = User.create(user_params)
@@ -9,6 +14,11 @@ class Api::V1::UsersController < ApplicationController
     else
       render json: {error: "Invalid username or password"}
     end
+  end
+
+
+  def show
+    render json: @current_user
   end
 
   def login

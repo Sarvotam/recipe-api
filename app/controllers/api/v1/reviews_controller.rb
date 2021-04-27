@@ -1,24 +1,27 @@
 class Api::V1::ReviewsController < ApplicationController
-	before_action :authorized
+	# before_action :authorized
 	before_action :find_recipe
 	before_action :find_review, only: [:show, :update, :destroy]
 
+	def index
+		@reviews = Review.all
+		render json: @reviews
+	end
 
 	def new
-		@reviews = Review.where(user_id: @user.id)
+		@reviews = Review.new
+		# @reviews = Review.where(user_id: @user.id)
 		render json: @reviews
 	end
 
 	def create
-		@review = Review.new(review_params)
-		# associate review with current recipe and current user
-		@review.recipe_id = @recipe.id
-		@review.user_id = @user.id
-			if @review.save
-				redirect_to @recipe
-			else
-				render 'new'
-			end
+		@review = @recipe.reviews.new(anonymous_review)
+		@reviews = @recipe.reviews
+		if @review.save
+			render json: {review: @review, status: :created, recipe: @recipe, reviews: @reviews}
+		else
+			render json: { errors: @review.errors }, status: :unprocessable_entity
+		end
 	end
 
 	def edit
@@ -40,11 +43,20 @@ class Api::V1::ReviewsController < ApplicationController
     redirect_to @recipe
 	end
 
+	def anonymous_review
+		anonymous_review_params = review_params
+		if logged_in?
+			anonymous_review_params[:user_id] = logged_in_user.id
+		else
+			anonymous_review_params[:user_id] = nil
+		end
+		return anonymous_review_params
+	end
 
 	private
 
 	def review_params
-		parmas.require(:review).permit(:rating, :comment)
+		params.permit(:rating, :comment, :recipe_id, :user_id)
 	end
 
 	def find_recipe
